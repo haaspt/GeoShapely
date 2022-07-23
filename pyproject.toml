@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "geoshapely"
+version = "0.1.0"
+description = ""
+authors = ["Tyler Haas <patrick.tyler.haas@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+Shapely = "^1.8.2"
+pyproj = "^3.3.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+black = "^22.6.0"
+isort = "^5.10.1"
+flake8 = "^4.0.1"
+ipython = "^8.4.0"
+jupyter = "^1.0.0"
+pre-commit = "^2.20.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 99
+target-version = ['py39']
+
+[tool.isort]
+profile = "black"
+line_length = 99
