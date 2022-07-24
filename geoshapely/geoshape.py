@@ -1,7 +1,5 @@
-from __future__ import annotations
-
 from copy import deepcopy
-from typing import Any, Optional, TypeVar, Union
+from typing import Any, Optional, TypeVar
 
 import pyproj
 from shapely.geometry import (
@@ -30,7 +28,7 @@ GeoShapeType = TypeVar("GeoShapeType", bound="GeoBaseGeometry")
 
 
 class GeoBaseGeometry:
-    def __init__(self, crs: Optional[Union[pyproj.CRS, str]]) -> None:
+    def __init__(self, crs: Optional[Any]) -> None:
         self._crs = self._parse_crs(crs)
 
     def _parse_crs(self, crs: Any) -> Optional[pyproj.CRS]:
@@ -72,8 +70,13 @@ class GeoBaseGeometry:
         crs: Any,
         transformer: Optional[pyproj.Transformer] = None,
     ) -> GeoShapeType:
+        if transformer and transformer.source_crs != self.crs:
+            raise ValueError(
+                "Incompatible pyproj.Transformer."
+                f"Transfromer has source crs of {transformer.source_crs} but \
+                geom has crs of {self.crs}."
+            )
         if self.crs is None:
-            # TODO add warning if a transformer is passed incidcating no transform will take place
             return self.set_crs(crs)
         crs = self._parse_crs(crs)
         if not transformer:
@@ -86,24 +89,27 @@ class GeoBaseGeometry:
 
 
 class GeoPoint(GeoBaseGeometry, Point):
-    def __init__(self, *args, crs: Optional[Union[pyproj.CRS, str]] = None, **kwargs) -> None:
+    def __init__(self, *args, crs: Optional[Any] = None, **kwargs) -> None:
         GeoBaseGeometry.__init__(self, crs=crs)
         Point.__init__(self, *args, **kwargs)
 
 
 class GeoPolygon(GeoBaseGeometry, Polygon):
-    def __init__(self, *args, crs: Optional[Union[pyproj.CRS, str]] = None, **kwargs) -> None:
+    def __init__(self, *args, crs: Optional[Any] = None, **kwargs) -> None:
         GeoBaseGeometry.__init__(self, crs=crs)
         Polygon.__init__(self, *args, **kwargs)
 
 
 class GeoLineString(GeoBaseGeometry, LineString):
-    def __init__(self, *args, crs: Optional[Union[pyproj.CRS, str]] = None, **kwargs) -> None:
+    def __init__(self, *args, crs: Optional[Any] = None, **kwargs) -> None:
         GeoBaseGeometry.__init__(self, crs=crs)
         LineString.__init__(self, *args, **kwargs)
 
 
 class GeoLinearRing(GeoBaseGeometry, LinearRing):
-    def __init__(self, *args, crs: Optional[Union[pyproj.CRS, str]] = None, **kwargs) -> None:
+    def __init__(self, *args, crs: Optional[Any] = None, **kwargs) -> None:
         GeoBaseGeometry.__init__(self, crs=crs)
         LinearRing.__init__(self, *args, **kwargs)
+
+
+# TODO add multipolygons
