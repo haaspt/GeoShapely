@@ -36,8 +36,20 @@ def test_geopoint():
     test_geopoint = GeoPoint(test_coords, crs=test_crs_string)
     assert test_geopoint.crs == test_crs
 
+    #  Test `.set_crs`
+    test_geopoint = GeoPoint(test_coords, crs=None)
+    set_geopoint = test_geopoint.set_crs(test_crs)
+    assert set_geopoint.crs == test_crs
+    # Confirm copy was returned
+    assert set_geopoint.crs != test_geopoint.crs
+    alt_crs = pyproj.CRS.from_string("epsg:3857")
+    with pytest.raises(ValueError):
+        set_geopoint.set_crs(alt_crs)
+    set_geopoint.set_crs(alt_crs, inplace=True, allow_override=True)
+    assert set_geopoint.crs == alt_crs
+
     # Test type checking
-    with pytest.raises(TypeError):
+    with pytest.raises(CRSError):
         GeoPoint(test_coords, crs=2)
 
     with pytest.raises(CRSError):
