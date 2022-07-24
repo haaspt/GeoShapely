@@ -68,6 +68,3 @@ class GeoPoint(GeoBaseGeometry, Point):
     def __init__(self, *args, crs: Optional[Union[pyproj.CRS, str]] = None, **kwargs) -> None:
         GeoBaseGeometry.__init__(self, crs=crs)
         Point.__init__(self, *args, **kwargs)
-
-    def test_method(self) -> None:
-        return self.crs
