@@ -51,17 +51,17 @@ def make_geoshape_from_geom(
             result = result.to_crs(crs=crs)
         else:
             result = shapely_geom.set_crs(crs)
-    elif isinstance(shapely_geom, Point):
+    elif type(shapely_geom) is Point:
         result = GeoPoint(shapely_geom, crs=crs)
-    elif isinstance(shapely_geom, LineString):
-        result = GeoLineString(shapely_geom, crs=crs)
-    elif isinstance(shapely_geom, Polygon):
-        result = GeoPolygon(shapely_geom, crs=crs)
-    elif isinstance(shapely_geom, LinearRing):
+    elif type(shapely_geom) is LinearRing:
         result = GeoLinearRing(shapely_geom, crs=crs)
+    elif type(shapely_geom) is LineString:
+        result = GeoLineString(shapely_geom, crs=crs)
+    elif type(shapely_geom) is Polygon:
+        result = GeoPolygon(shapely_geom, crs=crs)
     # TODO add multigeoms
     else:
-        return TypeError(
+        raise TypeError(
             f"No suitable Geo-equivalent exists for value of type {type(shapely_geom)}"
         )
     return result
