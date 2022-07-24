@@ -14,8 +14,7 @@ def make_geoshape_from_geom(
         # Just create a copy if a GeoShape is passed it back
         result = deepcopy(shapely_geom)
         if result.crs:
-            # TODO result = result.to_crs(crs=crs)
-            pass
+            result = result.to_crs(crs=crs)
         else:
             result = shapely_geom.set_crs(crs)
     elif isinstance(shapely_geom, Point):

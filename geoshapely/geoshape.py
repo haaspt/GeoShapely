@@ -13,6 +13,7 @@ from shapely.geometry import (
     Point,
     Polygon,
 )
+from shapely.ops import transform
 
 SHAPELY_GEOMS = [
     Point,
@@ -33,6 +34,9 @@ class GeoBaseGeometry:
         self._crs = self._parse_crs(crs)
 
     def _parse_crs(self, crs: Any) -> Optional[pyproj.CRS]:
+        if isinstance(crs, GeoShapeType):
+            # Users can pass in a GeoShape
+            return crs.crs
         if crs is None:
             return crs
         elif isinstance(crs, pyproj.CRS):
@@ -60,6 +64,23 @@ class GeoBaseGeometry:
             result = deepcopy(self)
         else:
             result = self
+        result._crs = crs
+        return result
+
+    def to_crs(
+        self: GeoShapeType,
+        crs: Any,
+        transformer: Optional[pyproj.Transformer] = None,
+    ) -> GeoShapeType:
+        if self.crs is None:
+            # TODO add warning if a transformer is passed incidcating no transform will take place
+            return self.set_crs(crs)
+        crs = self._parse_crs(crs)
+        if not transformer:
+            transformer = pyproj.Transformer.from_crs(self._crs, crs)
+        transform_func = transformer.transform
+        result = deepcopy(self)
+        result = transform(transform_func, result)
         result._crs = crs
         return result
 
