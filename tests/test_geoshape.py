@@ -1,7 +1,7 @@
 import pyproj
 import pytest
 from pyproj.exceptions import CRSError
-from shapely.geometry import Point
+from shapely.geometry import Point, Polygon
 from shapely.geometry.base import BaseGeometry
 
 from geoshapely.geoshape import GeoBaseGeometry, GeoLinearRing, GeoLineString, GeoPoint, GeoPolygon
@@ -74,6 +74,10 @@ def test_geopolygon():
     test_crs_string = "epsg:4326"
     test_crs = pyproj.CRS.from_string(test_crs_string)
     geopoly = GeoPolygon(test_coords, crs=test_crs)
+    assert geopoly.area == 1.0
+
+    poly = Polygon(test_coords)
+    geopoly = GeoPolygon(poly, crs=test_crs)
     assert geopoly.area == 1.0
 
 
