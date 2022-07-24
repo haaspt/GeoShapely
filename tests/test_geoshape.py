@@ -4,7 +4,7 @@ from pyproj.exceptions import CRSError
 from shapely.geometry import Point
 from shapely.geometry.base import BaseGeometry
 
-from geoshapely.geoshape import GeoBaseGeometry, GeoPoint
+from geoshapely.geoshape import GeoBaseGeometry, GeoLinearRing, GeoLineString, GeoPoint, GeoPolygon
 
 
 def test_geopoint():
@@ -59,3 +59,28 @@ def test_geopoint():
     assert isinstance(test_geopoint, GeoBaseGeometry)
     assert isinstance(test_geopoint, Point)
     assert isinstance(test_geopoint, BaseGeometry)
+
+
+def test_geolinestring():
+    test_coords = [[0, 0], [1, 0], [1, 1]]
+    test_crs_string = "epsg:4326"
+    test_crs = pyproj.CRS.from_string(test_crs_string)
+    geoline = GeoLineString(test_coords, crs=test_crs)
+    assert geoline.length == 2
+
+
+def test_geopolygon():
+    test_coords = ((0.0, 0.0), (0.0, 1.0), (1.0, 1.0), (1.0, 0.0), (0.0, 0.0))
+    test_crs_string = "epsg:4326"
+    test_crs = pyproj.CRS.from_string(test_crs_string)
+    geopoly = GeoPolygon(test_coords, crs=test_crs)
+    assert geopoly.area == 1.0
+
+
+def test_geolinearring():
+    test_coords = ((0, 0), (0, 1), (1, 1), (1, 0))
+    test_crs_string = "epsg:4326"
+    test_crs = pyproj.CRS.from_string(test_crs_string)
+    georing = GeoLinearRing(test_coords, crs=test_crs)
+    assert georing.is_closed
+    assert georing.length == 4.0

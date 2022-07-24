@@ -68,3 +68,21 @@ class GeoPoint(GeoBaseGeometry, Point):
     def __init__(self, *args, crs: Optional[Union[pyproj.CRS, str]] = None, **kwargs) -> None:
         GeoBaseGeometry.__init__(self, crs=crs)
         Point.__init__(self, *args, **kwargs)
+
+
+class GeoPolygon(GeoBaseGeometry, Polygon):
+    def __init__(self, *args, crs: Optional[Union[pyproj.CRS, str]] = None, **kwargs) -> None:
+        GeoBaseGeometry.__init__(self, crs=crs)
+        Polygon.__init__(self, *args, **kwargs)
+
+
+class GeoLineString(GeoBaseGeometry, LineString):
+    def __init__(self, *args, crs: Optional[Union[pyproj.CRS, str]] = None, **kwargs) -> None:
+        GeoBaseGeometry.__init__(self, crs=crs)
+        LineString.__init__(self, *args, **kwargs)
+
+
+class GeoLinearRing(GeoBaseGeometry, LinearRing):
+    def __init__(self, *args, crs: Optional[Union[pyproj.CRS, str]] = None, **kwargs) -> None:
+        GeoBaseGeometry.__init__(self, crs=crs)
+        LinearRing.__init__(self, *args, **kwargs)
